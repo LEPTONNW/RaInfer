@@ -8,7 +8,13 @@ RaInfer is a C++17 mobile inference engine that connects a small draft model to 
 
 The engine has been tested on a Galaxy S22 Ultra with Snapdragon 8 Gen 1 (SM8450). The CPU generates draft candidates while reusing cached computations, and the Hexagon v69 NPU executes the target model through the ExecuTorch Qualcomm backend and QNN/QAIRT. An experimental Vulkan GPU draft output head is also implemented, but the selected deployment baseline is **CPU + NPU with the GPU draft head disabled**.
 
-> This is an **engine source release**. Model weights, training data, the Qualcomm SDK/runtime, and APKs are not included. A fresh clone can run the host contract tests. Actual inference on a phone requires matching model assets and separately prepared dependencies as described below. This repository does not currently provide a downloadable, complete target-and-drafter model bundle.
+> This is an **engine source release**. Model weights, training data, the Qualcomm SDK/runtime, and APKs are not included. A fresh clone can run the host contract tests. Actual inference on a phone requires matching model assets and separately prepared dependencies as described below.
+
+Model/DFlash2 assets and bilingual usage instructions are published separately as
+[Gemma4-E2B-Dflash2-Android](https://huggingface.co/RoundRobin237/Gemma4-E2B-Dflash2-Android).
+**mmproj is not reuploaded.** Download Unsloth's GGUF conversion of Google's
+vision weights [from its upstream provider](https://huggingface.co/unsloth/gemma-4-E2B-it-GGUF/blob/0314792d7f1f7e229411f620751375812bb9faf2/mmproj-F16.gguf);
+the model package records its pinned revision and SHA256.
 
 **To connect your own app, start with the [app-independent integration guide](docs/INTEGRATION.md) (Korean).** Integration uses a JSONL process interface and does not require a particular chat app. Instead of a UI or application distribution, the repository provides a [Kotlin process adapter example](examples/android/RaInferProcess.kt).
 

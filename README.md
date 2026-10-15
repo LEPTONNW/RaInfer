@@ -8,7 +8,9 @@ RaInfer는 작은 초안 모델이 다음 토큰 후보를 만들고, 실제 답
 
 Galaxy S22 Ultra의 Snapdragon 8 Gen 1(SM8450)에서 동작을 검증했습니다. CPU는 캐시를 재사용하면서 초안을 생성하고, Hexagon v69 NPU는 ExecuTorch Qualcomm backend와 QNN/QAIRT를 통해 본체 모델을 실행합니다. Vulkan GPU 초안 출력 헤드도 실험적으로 구현되어 있지만, 현재 배포 기준은 **GPU를 끈 CPU + NPU 구성**입니다.
 
-> 이 저장소는 **엔진 소스 공개본**입니다. 모델 가중치, 학습 데이터, Qualcomm SDK·런타임, APK는 포함하지 않습니다. 처음 복제한 상태에서는 호스트 계약 테스트를 실행할 수 있습니다. 휴대폰의 실제 추론에는 아래에 설명한 서로 호환되는 모델 자산과 별도로 준비한 의존성이 필요합니다. 현재 이 저장소에서 다운로드할 수 있는 완성형 본체+초안 모델 묶음은 제공하지 않습니다.
+> 이 저장소는 **엔진 소스 공개본**입니다. 모델 가중치, 학습 데이터, Qualcomm SDK·런타임, APK는 포함하지 않습니다. 처음 복제한 상태에서는 호스트 계약 테스트를 실행할 수 있습니다. 휴대폰의 실제 추론에는 아래에 설명한 서로 호환되는 모델 자산과 별도로 준비한 의존성이 필요합니다.
+
+모델·DFlash2 자산과 한·영 사용 설명은 별도 [Gemma4-E2B-Dflash2-Android](https://huggingface.co/RoundRobin237/Gemma4-E2B-Dflash2-Android)에 공개합니다. **mmproj는 재업로드하지 않습니다.** Google 원본 비전 가중치의 Unsloth GGUF 변환본을 [원 제공처](https://huggingface.co/unsloth/gemma-4-E2B-it-GGUF/blob/0314792d7f1f7e229411f620751375812bb9faf2/mmproj-F16.gguf)에서 받도록 안내하고 고정 리비전·SHA256을 기록했습니다.
 
 **자신의 앱에 연결하려면 [앱 독립 연동 가이드](docs/INTEGRATION.md)부터 읽어보세요.** 특정 채팅 앱 설치 없이 JSONL 프로세스 인터페이스로 연결합니다. UI·앱 배포본 대신 [Kotlin 프로세스 어댑터 예제](examples/android/RaInferProcess.kt)를 제공합니다.
 
