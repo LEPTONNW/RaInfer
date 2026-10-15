@@ -16,7 +16,9 @@ Model/DFlash2 assets and bilingual usage instructions are published separately a
 vision weights [from its upstream provider](https://huggingface.co/unsloth/gemma-4-E2B-it-GGUF/blob/0314792d7f1f7e229411f620751375812bb9faf2/mmproj-F16.gguf);
 the model package records its pinned revision and SHA256.
 
-**To connect your own app, start with the [app-independent integration guide](docs/INTEGRATION.md) (Korean).** Integration uses a JSONL process interface and does not require a particular chat app. Instead of a UI or application distribution, the repository provides a [Kotlin process adapter example](examples/android/RaInferProcess.kt).
+**Start with the [required model/DFlash2 files and startup guide](docs/MODEL_FILES.en.md).** It lists the target PTE, IO contract, six draft companion files and tokenizer by exact filename.
+
+**To connect your own app, read the [app-independent integration guide](docs/INTEGRATION.md) (Korean).** Integration uses a JSONL process interface and does not require a particular chat app. Instead of a UI or application distribution, the repository provides a [Kotlin process adapter example](examples/android/RaInferProcess.kt).
 
 **Image-input experiment:** an [experimental bridge](docs/VISION.md) runs a
 separate CPU mmproj encoder and forwards projected image features to the NPU

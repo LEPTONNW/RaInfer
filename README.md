@@ -12,7 +12,9 @@ Galaxy S22 Ultra의 Snapdragon 8 Gen 1(SM8450)에서 동작을 검증했습니�
 
 모델·DFlash2 자산과 한·영 사용 설명은 별도 [Gemma4-E2B-Dflash2-Android](https://huggingface.co/RoundRobin237/Gemma4-E2B-Dflash2-Android)에 공개합니다. **mmproj는 재업로드하지 않습니다.** Google 원본 비전 가중치의 Unsloth GGUF 변환본을 [원 제공처](https://huggingface.co/unsloth/gemma-4-E2B-it-GGUF/blob/0314792d7f1f7e229411f620751375812bb9faf2/mmproj-F16.gguf)에서 받도록 안내하고 고정 리비전·SHA256을 기록했습니다.
 
-**자신의 앱에 연결하려면 [앱 독립 연동 가이드](docs/INTEGRATION.md)부터 읽어보세요.** 특정 채팅 앱 설치 없이 JSONL 프로세스 인터페이스로 연결합니다. UI·앱 배포본 대신 [Kotlin 프로세스 어댑터 예제](examples/android/RaInferProcess.kt)를 제공합니다.
+**먼저 [모델·DFlash2 필수 파일과 시작 방법](docs/MODEL_FILES.md)을 확인하세요.** 본체 PTE 1개, 입출력 규격 1개, 초안 파일 6개와 토크나이저를 정확한 파일명으로 안내합니다.
+
+**자신의 앱에 연결하려면 [앱 독립 연동 가이드](docs/INTEGRATION.md)를 읽어보세요.** 특정 채팅 앱 설치 없이 JSONL 프로세스 인터페이스로 연결합니다. UI·앱 배포본 대신 [Kotlin 프로세스 어댑터 예제](examples/android/RaInferProcess.kt)를 제공합니다.
 
 **이미지 입력 실험:** 별도 mmproj CPU 인코더의 이미지 특징을 NPU 본체에 전달하는 [경로](docs/VISION.md)를 추가했습니다. S22에서 빨강·파랑 응답, DFlash2 출력 일치, Java·한국어·영어 텍스트 회귀와 Logits 오차 0을 확인했습니다. 합성 이미지 두 장을 사용한 제한된 검증이며 일반 비전 품질을 보증하지 않습니다. 기존 APK는 변경하지 않았습니다.
 

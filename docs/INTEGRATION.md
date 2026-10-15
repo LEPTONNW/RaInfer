@@ -78,12 +78,13 @@ SM8450의 vendor RPC 접근을 사용하는 앱에서는 `<application>` 안에 
 
 ## 2. 모델과 런타임 경로 지정
 
-앱 전용 저장소 등 앱이 읽을 수 있는 실제 경로에 호환 자산을 준비합니다.
+먼저 [다운로드 파일 안내](MODEL_FILES.md)의 본체·초안·토크나이저를 준비합니다.
+앱 전용 저장소 등 앱이 읽을 수 있는 실제 경로에 공개 모델의 폴더 구성을 유지합니다.
 
 ```text
 modelDirectory/
-  gemma4-e2b-dflash2-verify-2k.pte
-  io-contract.json
+  gemma4-e2b-dflash2-vision-verify-2k.pte
+  io-contract.vision.json
   draft-manifest.json
   cpu-body-fp32.bin
   embedding-cpu-fp32.pte
@@ -92,8 +93,10 @@ modelDirectory/
   active-vocabulary.u32
 ```
 
-본체와 초안은 [README의 지원 조건](../README.md)에 맞아야 하며, 공개 저장소에는 해당 가중치가
-포함되어 있지 않습니다. `io-contract.json`의 scale·zero-point는 임의로 만들거나 다른 PTE에서
+여기서 `modelDirectory`는 다운로드 폴더의 **`npu/`**입니다. 토크나이저는 그 옆의
+`tokenizer/`에서 사용합니다. 본체와 초안은 [README의 지원 조건](../README.md)에 맞아야 합니다.
+엔진 Git 저장소에는 가중치가 없으며 연결된 Hugging Face 저장소에서 받습니다.
+`io-contract.vision.json`의 scale·zero-point는 임의로 만들거나 다른 PTE에서
 복사하지 마세요. 로딩 전에 파일 해시를 확인하는 것은 앱/설치기의 책임입니다.
 
 호스트는 `LD_LIBRARY_PATH`에 Android 라이브러리 경로를, `ADSP_LIBRARY_PATH`에 DSP 경로를
@@ -114,11 +117,14 @@ ADSP_LIBRARY_PATH=<runtimeDirectory>;/vendor/lib/rfsa/adsp;/vendor/dsp
 아래 코드는 **UI 스레드가 아닌 작업 스레드**에서 실행합니다.
 
 ```kotlin
+val modelDirectory = File(context.filesDir, "models/gemma-e2b-dflash2/npu")
 val worker = RaInferProcess.start(
     nativeLibraryDir = File(context.applicationInfo.nativeLibraryDir),
     runtimeDirectory = File(context.filesDir, "qnn-v69"),
-    modelDirectory = File(context.filesDir, "models/gemma-e2b-dflash2"),
-    workDirectory = File(context.cacheDir, "rainfer")
+    modelDirectory = modelDirectory,
+    workDirectory = File(context.cacheDir, "rainfer"),
+    targetFile = File(modelDirectory, "gemma4-e2b-dflash2-vision-verify-2k.pte"),
+    contractFile = File(modelDirectory, "io-contract.vision.json")
 )
 try {
     // Token IDs produced by your exact Gemma tokenizer and chat template.
@@ -132,6 +138,8 @@ try {
 ```
 
 `start`는 모델 로딩 및 ready 응답을 기다리고, `generate`는 완성된 응답을 기다리는 블로킹 함수입니다.
+어댑터의 기본 파일명은 기존 텍스트 전용 설치본과 호환되도록 남겨두었으므로, 공개 비전 PTE를
+사용할 때는 위처럼 `targetFile`·`contractFile`을 명시합니다. 이 PTE로 텍스트 생성도 가능합니다.
 코루틴을 사용하는 앱이라면 `Dispatchers.IO`, Java 앱이라면 작업용 Executor 등에 배치하세요.
 예제에는 모든 앱에 공통으로 적용할 수 있는 타임아웃·서비스·권한 UI를 넣지 않았습니다.
 
