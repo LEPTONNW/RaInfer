@@ -58,11 +58,23 @@ Separate CPU/GPU-only GGUF trials use different quantization and have no DFlash
 feature connection; they are not directly equivalent speculative-decoding
 comparisons. No CPU/GPU-only speed is presented as a limit of all future kernels.
 
+## Later static-image bridge checks
+
+The public image bridge was subsequently tested on S22 using code revision
+`cd3768adce7f7cd1a7064aab6fabc177f49ca130`. See [VISION.md](VISION.md) and
+[the sanitized record](benchmarks/vision-sm8450-20261015.json) for measured CPU
+image encoding, NPU prefill, native decode and regression checks. These use a
+different prompt/template and shell cpuset from the historical app benchmarks.
+The same Java input measured 6.9749 native t/s target-only and 15.5555 with CPU
+DFlash2, with identical output tokens. This does not replace the historical
+records or demonstrate the 25–30 t/s goal.
+
 ## Publication scope
 
 This source repository contains a summary and reference metadata rather than
 private working-directory logs, full captures, model weights or training data.
-The measurements predate this public source packaging. This packaging passed
+The historical measurements above predate this public source packaging. That packaging passed
 host tests and was rebuilt for Android using existing dependencies; it is not
-claimed to be a new on-device performance measurement. Average 25–30 t/s has not
+claimed to be a new on-device performance measurement. The later image-bridge
+suite is identified separately. Average 25–30 t/s has not
 been demonstrated. Original installed APK and weights were preserved.

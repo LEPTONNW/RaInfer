@@ -1,14 +1,14 @@
 # Experimental static-image input / 실험용 이미지 입력
 
-This branch adds an **unqualified, experimental** Gemma 4 E2B image bridge.
-PC mmproj encoding and GGUF color-reference checks have passed; **Android
-NPU image inference and text regression have not yet been tested on the phone**.
-The existing text-only release and APK are unchanged. Do not treat host tests,
-successful compilation, or a PC reference answer as NPU vision qualification.
+This adds an **experimental** Gemma 4 E2B image bridge. On 2026-10-15, S22
+tests passed for two synthetic color images, target-only versus DFlash2 tokens,
+three text regressions and exact native U16 logits. The existing installed APK
+and model were preserved. This limited suite does not certify arbitrary images,
+OCR, general multimodal quality or other devices.
 
-현재 PC에서 이미지 인코딩과 GGUF 비교 답변까지 확인했습니다. S22에서
-NPU 이미지 입력과 기존 텍스트 회귀 검증을 완료하기 전에는 배포용으로
-판정하지 않습니다. 앱이나 APK는 이 저장소에서 제공하지 않습니다.
+PC GGUF 비교에 이어 S22 NPU에서도 빨강·파랑 응답과 DFlash2 출력 일치,
+텍스트 세 질문의 토큰·Logits 일치를 확인했습니다. 이미지→텍스트→다른 이미지
+순서에서도 상태가 섞이지 않았습니다. 앱이나 APK는 제공하지 않습니다.
 
 ## Architecture
 
@@ -19,8 +19,9 @@ NPU 이미지 입력과 기존 텍스트 회귀 검증을 완료하기 전에는
 3. `mobile_runner` reads the bundle. A portable ExecuTorch embedding hook merges
    the vectors into the target input before the existing QNN decoder graphs.
 4. CPU DFlash2 drafting and NPU AR4 verification then use the normal transaction
-   path. The draft was trained for text; image-conditioned acceptance and quality
-   are unmeasured and must be checked independently.
+   path. The draft was trained for text. The one-word image answers required
+   only one post-prefill verification round and accepted 0/3 candidates; this
+   does not establish the acceptance of longer image-conditioned answers.
 
 The GPU is not used in this image path. The mmproj is not itself a QNN/NPU model.
 Audio, video, other Gemma sizes, noncausal image attention and arbitrary
@@ -55,7 +56,7 @@ The existing QNN decoder multiplies its primary embedding by `sqrt(1536)`.
 The bridge therefore supplies `image / sqrt(1536)`, while image positions use
 pad token `0` in the PLE lookup. Normal text rows use the original registered
 ExecuTorch dequantization kernel. With no image bundle, the hook delegates the
-entire call unchanged. These semantics still require physical-device checks.
+entire call unchanged. These semantics passed the limited physical-device suite.
 
 ## Build the optional encoder
 
@@ -154,7 +155,7 @@ in the extracted native-library directory, as with the worker; do not call
 `System.loadLibrary` on it. Executable packaging is described in
 [INTEGRATION.md](INTEGRATION.md). There is no required companion app.
 
-## Qualification before public model upload
+## Qualification procedure and recorded results
 
 1. Compare original text PTE and experimental PTE with identical Java,
    Korean and English token inputs: output tokens, prefill predictions and native
@@ -172,8 +173,37 @@ in the extracted native-library directory, as with the worker; do not call
    speed against the same build/environment; historical 19.1 t/s is not a vision
    performance claim.
 
-No step above authorizes replacing an existing installed model or APK. The PC
-preparation produces separate experimental artifacts. Phone tests are pending.
+The original installed model and APK were preserved; tests used a separate
+scratch model. Only the portable operator descriptor was toggled in that scratch
+file between baseline and image modes, with full SHA256 checks after each change.
+
+Recorded results are in [vision-sm8450-20261015.json](benchmarks/vision-sm8450-20261015.json).
+The three text cases produced identical output/prefill predictions and zero
+maximum/mean native U16 error across each captured last-prefill AR4 logit block.
+The generated Java example compiled and printed the product `12`. Red/blue
+answers were `Red`/`Blue`; each image injected 64 primary rows and 64 PLE pad rows.
+Target-only and DFlash2 tokens matched, including a repeated red request after
+an intervening Java and blue request. The Java request reported zero image rows.
+
+| Device measurement | Result |
+|---|---:|
+| Java target-only, original PTE | 6.9460 native decode t/s |
+| Same Java, vision-enabled PTE, target-only | 6.9749 native decode t/s |
+| Same Java, vision-enabled PTE + CPU DFlash2 | 15.5555 native decode t/s; 83/183 candidates accepted |
+| Red/blue CPU image encoding | 9.4474 / 9.4604 s |
+| Red/blue encoder loading | 3.2702 / 3.1627 s |
+| Red/blue NPU prefill, target-only | 3.4431 / 3.4776 s |
+
+The Java answer had 145 tokens including EOS, with 144 counted in native decode
+throughput. Four workers were requested, but CPU availability changed across
+state checks: **4–5** initially, **4–5,7** around target-only runs, **4,6–7**
+before the persistent run and **4–7** after it. These snapshots do not guarantee
+four continuously available cores. Thermal status before the persistent run was
+`2`. Image encoding
+used four requested CPU threads, no GPU. These shell measurements are distinct
+from the historical app-level 19.1 t/s example. Two-token color answers are not a
+meaningful long-answer throughput benchmark. All data are single-run records;
+thermal/scheduling variation and the narrow synthetic fixture scope apply.
 
 ## Licensing
 

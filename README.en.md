@@ -12,10 +12,12 @@ The engine has been tested on a Galaxy S22 Ultra with Snapdragon 8 Gen 1 (SM8450
 
 **To connect your own app, start with the [app-independent integration guide](docs/INTEGRATION.md) (Korean).** Integration uses a JSONL process interface and does not require a particular chat app. Instead of a UI or application distribution, the repository provides a [Kotlin process adapter example](examples/android/RaInferProcess.kt).
 
-**Image-input development:** an [experimental bridge](docs/VISION.md) runs a
+**Image-input experiment:** an [experimental bridge](docs/VISION.md) runs a
 separate CPU mmproj encoder and forwards projected image features to the NPU
-target. Red/blue PC GGUF reference checks passed; Android NPU image inference
-and text regression are still pending. The existing release APK is unchanged.
+target. S22 checks passed for red/blue answers, target-only versus DFlash2 output,
+Java/Korean/English text regressions and zero native-logit error. This is limited
+validation with two synthetic images, not general vision-quality certification.
+The existing release APK is unchanged.
 
 ## What is this engine for?
 
@@ -49,7 +51,7 @@ The project does not provide a general-purpose LLM server, HTTP API server, chat
 | SDK | QAIRT `2.37.0.250724` |
 | ExecuTorch | Installation based on `ca56e1ffdba1c902d9202021d7297982d3501439` |
 
-Support is not claimed for every Gemma 4 size, Qwen, generic GGUF files, or arbitrary public DFlash/MTP weights. Other Snapdragon generations and NPUs require separate graph conversion and validation. The device-qualified release remains text-only. Vision is under development in the experimental path above; audio and MTP are not provided.
+Support is not claimed for every Gemma 4 size, Qwen, generic GGUF files, or arbitrary public DFlash/MTP weights. Other Snapdragon generations and NPUs require separate graph conversion and validation. The static-image experiment above is separate from the existing text path; audio and MTP are not provided.
 
 ### Which acceleration model does it use?
 

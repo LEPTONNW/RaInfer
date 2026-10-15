@@ -90,5 +90,5 @@ APK/model files were not replaced by preparing this source release.
 ## Optional experimental image helper
 
 See [VISION.md](VISION.md) for the separately built llama.cpp/mtmd CPU encoder,
-vision-specific PTE metadata preparation, app integration and pending device
-qualification. Its successful build does not validate NPU image inference.
+vision-specific PTE metadata preparation, app integration and limited S22
+validation results. Successful compilation alone does not validate inference.

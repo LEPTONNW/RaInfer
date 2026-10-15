@@ -84,7 +84,7 @@ A vision-enabled PTE and matching IO contract add `vision_bundle_protocol: 1`
 to the ready record. A text-only contract reports `0`. Supply `vision_bundle`
 instead of `tokens` to load a locally encoded image/prompt bundle. Reports add
 image-row injection counters and separately recorded encoder timing. The
-experimental format and pending device checks are documented in [VISION.md](VISION.md).
+experimental format and limited device checks are documented in [VISION.md](VISION.md).
 Normal text requests retain the existing behavior. A ready flag reports the
 selected contract; it is not a certification of the model's image accuracy.
 

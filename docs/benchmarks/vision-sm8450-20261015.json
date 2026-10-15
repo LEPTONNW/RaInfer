@@ -1,0 +1,507 @@
+{
+  "date": "2026-10-15",
+  "measured_engine_code_revision": "cd3768adce7f7cd1a7064aab6fabc177f49ca130",
+  "device": "Samsung Galaxy S22 Ultra / SM-S908N / SM8450 / Hexagon v69",
+  "qairt": "2.37.0.250724",
+  "actual_shell_CPU_allowed_list": "4,6-7",
+  "requested_CPU_workers": 4,
+  "foreground": "Screen awake and interactive; standalone shell processes, no app benchmark",
+  "thermal_status_before_persistent_run": 2,
+  "target_sha256": "6475a64ba4c82a85dd635bde40cc51ece8effe47366565a1c6e58d48862cdbba",
+  "original_target_sha256": "c05fe24cb87fe20f3c2fdf3bb942755486f4c34785ad4d28a5b5546a7378983b",
+  "installed_target_and_APK_unchanged_verified": true,
+  "checks": {
+    "text-final-meeting-change": true,
+    "text-final-java-product": true,
+    "text-english-meeting-change": true,
+    "image-red": true,
+    "image-blue": true,
+    "image-repeat": true,
+    "text-after-image": true,
+    "red-semantic-answer": true,
+    "blue-semantic-answer": true,
+    "text-after-image-has-no-image-rows": true,
+    "java-example-compiles-and-prints-product": true,
+    "speculative-red-uses-CPU-draft-and-Hexagon-target": true,
+    "speculative-text-uses-CPU-draft-and-Hexagon-target": true,
+    "speculative-blue-uses-CPU-draft-and-Hexagon-target": true,
+    "speculative-red-repeat-uses-CPU-draft-and-Hexagon-target": true
+  },
+  "text_last_prefill_U16_logits": {
+    "final-java-product": {
+      "dtype": "uint16-le",
+      "units": "native quantized codes; not FP32 logits",
+      "max_absolute_error": 0,
+      "mean_absolute_error": 0.0,
+      "differing_values": 0
+    },
+    "final-meeting-change": {
+      "dtype": "uint16-le",
+      "units": "native quantized codes; not FP32 logits",
+      "max_absolute_error": 0,
+      "mean_absolute_error": 0.0,
+      "differing_values": 0
+    },
+    "english-meeting-change": {
+      "dtype": "uint16-le",
+      "units": "native quantized codes; not FP32 logits",
+      "max_absolute_error": 0,
+      "mean_absolute_error": 0.0,
+      "differing_values": 0
+    }
+  },
+  "cases": [
+    {
+      "case": "baseline-english-meeting-change",
+      "prompt_tokens": 32,
+      "output_tokens": 42,
+      "prefill_seconds": 1.15719,
+      "decode_seconds": 6.07014,
+      "native_decode_tps": 6.75437,
+      "accepted": null,
+      "proposed": 0,
+      "acceptance_fraction": null,
+      "vision": {
+        "image_tokens": 0,
+        "ple_rows_padded": 0,
+        "primary_rows_injected": 0
+      }
+    },
+    {
+      "case": "baseline-final-java-product",
+      "prompt_tokens": 49,
+      "output_tokens": 145,
+      "prefill_seconds": 1.84312,
+      "decode_seconds": 20.7314,
+      "native_decode_tps": 6.946,
+      "accepted": null,
+      "proposed": 0,
+      "acceptance_fraction": null,
+      "vision": {
+        "image_tokens": 0,
+        "ple_rows_padded": 0,
+        "primary_rows_injected": 0
+      }
+    },
+    {
+      "case": "baseline-final-meeting-change",
+      "prompt_tokens": 41,
+      "output_tokens": 96,
+      "prefill_seconds": 1.57847,
+      "decode_seconds": 13.5864,
+      "native_decode_tps": 6.99227,
+      "accepted": null,
+      "proposed": 0,
+      "acceptance_fraction": null,
+      "vision": {
+        "image_tokens": 0,
+        "ple_rows_padded": 0,
+        "primary_rows_injected": 0
+      }
+    },
+    {
+      "case": "speculative-blue",
+      "prompt_tokens": 95,
+      "output_tokens": 2,
+      "prefill_seconds": 3.353099114,
+      "decode_seconds": 0.14643151,
+      "native_decode_tps": 6.8291312436783596,
+      "accepted": 0,
+      "proposed": 3,
+      "acceptance_fraction": 0.0,
+      "vision": {
+        "image_tokens": 64,
+        "ple_rows_padded": 64,
+        "primary_rows_injected": 64
+      }
+    },
+    {
+      "case": "speculative-red-repeat",
+      "prompt_tokens": 95,
+      "output_tokens": 2,
+      "prefill_seconds": 3.354765519,
+      "decode_seconds": 0.143317188,
+      "native_decode_tps": 6.977530148023836,
+      "accepted": 0,
+      "proposed": 3,
+      "acceptance_fraction": 0.0,
+      "vision": {
+        "image_tokens": 64,
+        "ple_rows_padded": 64,
+        "primary_rows_injected": 64
+      }
+    },
+    {
+      "case": "speculative-red",
+      "prompt_tokens": 95,
+      "output_tokens": 2,
+      "prefill_seconds": 3.313117395,
+      "decode_seconds": 0.145219479,
+      "native_decode_tps": 6.88612854753459,
+      "accepted": 0,
+      "proposed": 3,
+      "acceptance_fraction": 0.0,
+      "vision": {
+        "image_tokens": 64,
+        "ple_rows_padded": 64,
+        "primary_rows_injected": 64
+      }
+    },
+    {
+      "case": "speculative-text",
+      "prompt_tokens": 49,
+      "output_tokens": 145,
+      "prefill_seconds": 1.747759583,
+      "decode_seconds": 9.257152965,
+      "native_decode_tps": 15.555538570491798,
+      "accepted": 83,
+      "proposed": 183,
+      "acceptance_fraction": 0.453551912568306,
+      "vision": {
+        "image_tokens": 0,
+        "ple_rows_padded": 0,
+        "primary_rows_injected": 0
+      }
+    },
+    {
+      "case": "vision-english-meeting-change",
+      "prompt_tokens": 32,
+      "output_tokens": 42,
+      "prefill_seconds": 1.08945,
+      "decode_seconds": 5.77246,
+      "native_decode_tps": 7.10269,
+      "accepted": null,
+      "proposed": 0,
+      "acceptance_fraction": null,
+      "vision": {
+        "image_tokens": 0,
+        "ple_rows_padded": 0,
+        "primary_rows_injected": 0
+      }
+    },
+    {
+      "case": "vision-final-java-product",
+      "prompt_tokens": 49,
+      "output_tokens": 145,
+      "prefill_seconds": 1.85488,
+      "decode_seconds": 20.6454,
+      "native_decode_tps": 6.97491,
+      "accepted": null,
+      "proposed": 0,
+      "acceptance_fraction": null,
+      "vision": {
+        "image_tokens": 0,
+        "ple_rows_padded": 0,
+        "primary_rows_injected": 0
+      }
+    },
+    {
+      "case": "vision-final-meeting-change",
+      "prompt_tokens": 41,
+      "output_tokens": 96,
+      "prefill_seconds": 1.62848,
+      "decode_seconds": 13.9562,
+      "native_decode_tps": 6.807,
+      "accepted": null,
+      "proposed": 0,
+      "acceptance_fraction": null,
+      "vision": {
+        "image_tokens": 0,
+        "ple_rows_padded": 0,
+        "primary_rows_injected": 0
+      }
+    },
+    {
+      "case": "vision-image-blue",
+      "prompt_tokens": 95,
+      "output_tokens": 2,
+      "prefill_seconds": 3.47756,
+      "decode_seconds": 0.148617,
+      "native_decode_tps": 6.72871,
+      "accepted": null,
+      "proposed": 0,
+      "acceptance_fraction": null,
+      "vision": {
+        "image_tokens": 64,
+        "ple_rows_padded": 64,
+        "primary_rows_injected": 64
+      }
+    },
+    {
+      "case": "vision-image-red",
+      "prompt_tokens": 95,
+      "output_tokens": 2,
+      "prefill_seconds": 3.44312,
+      "decode_seconds": 0.145798,
+      "native_decode_tps": 6.8588,
+      "accepted": null,
+      "proposed": 0,
+      "acceptance_fraction": null,
+      "vision": {
+        "image_tokens": 64,
+        "ple_rows_padded": 64,
+        "primary_rows_injected": 64
+      }
+    }
+  ],
+  "image_encoder_measurements": [
+    {
+      "image": "red",
+      "timings": {
+        "image_encode_seconds": 9.447370621,
+        "load_seconds": 3.270235311,
+        "preprocess_seconds": 0.004348021
+      },
+      "threads_requested": 4,
+      "image_rows": 64,
+      "backend": "llama.cpp mtmd CPU"
+    },
+    {
+      "image": "blue",
+      "timings": {
+        "image_encode_seconds": 9.460441663,
+        "load_seconds": 3.162736718,
+        "preprocess_seconds": 0.005137968
+      },
+      "threads_requested": 4,
+      "image_rows": 64,
+      "backend": "llama.cpp mtmd CPU"
+    }
+  ],
+  "image_answers": {
+    "red": "Red",
+    "blue": "Blue"
+  },
+  "image_shape": [
+    224,
+    224
+  ],
+  "image_prompt": "What is the dominant color in the image? Answer with one color word.",
+  "image_max_tokens_setting": 256,
+  "actual_image_rows": 64,
+  "java_validation": {
+    "javac_exit_code": 0,
+    "java_exit_code": 0,
+    "stdout": "3과 4의 곱은: 12"
+  },
+  "metric": "Native decode excludes first prefill-produced token; prefill/loading excluded from native decode t/s",
+  "scope": "Two synthetic color images and three text prompts; limited regression, not broad multimodal quality certification",
+  "not_a_broad_quality_or_sustained_performance_guarantee": true,
+  "observed_CPU_allowed_lists_by_state": {
+    "baseline-after-device": "4-5,7",
+    "baseline-before-device": "4-5,7",
+    "deploy-device": "4-5,7",
+    "persistent-after-device": "4-7",
+    "persistent-before-device": "4,6-7",
+    "vision-after-device": "4-5,7",
+    "vision-before-device": "4-5,7"
+  },
+  "CPU_mask_note": "Availability varied across snapshots; not a continuous per-thread core trace. An earlier ad-hoc shell check showed 4-5.",
+  "text_inputs": [
+    {
+      "id": "final-meeting-change",
+      "prompt": "회사 동료에게 오늘 오후 회의를 내일 오전으로 옮겨도 되는지 정중하게 묻는 세 문장 메시지를 써줘.",
+      "tokens": [
+        2,
+        105,
+        2364,
+        107,
+        115143,
+        21110,
+        239428,
+        29806,
+        31694,
+        133055,
+        38012,
+        237281,
+        237482,
+        17426,
+        237613,
+        228891,
+        7246,
+        193217,
+        240505,
+        237490,
+        63930,
+        237308,
+        12048,
+        238187,
+        26216,
+        236743,
+        244209,
+        237170,
+        19485,
+        16950,
+        237851,
+        155170,
+        61419,
+        117637,
+        242332,
+        236761,
+        106,
+        107,
+        105,
+        4368,
+        107
+      ],
+      "max_new_tokens": 96
+    },
+    {
+      "id": "final-java-product",
+      "prompt": "Java에서 두 정수를 곱해 반환하는 static 메서드와 main에서 3과 4를 넣어 출력하는 아주 짧은 실행 가능한 예제를 코드 블록 하나로 써줘.",
+      "tokens": [
+        2,
+        105,
+        2364,
+        107,
+        19102,
+        7726,
+        24370,
+        12048,
+        75818,
+        118692,
+        237578,
+        25675,
+        239394,
+        11973,
+        2002,
+        235340,
+        238001,
+        238229,
+        1689,
+        7726,
+        236743,
+        236800,
+        237842,
+        236743,
+        236812,
+        237482,
+        210205,
+        149107,
+        11973,
+        111681,
+        230115,
+        237456,
+        89064,
+        134044,
+        21503,
+        144211,
+        148991,
+        67263,
+        238942,
+        30732,
+        237323,
+        117637,
+        242332,
+        236761,
+        106,
+        107,
+        105,
+        4368,
+        107
+      ],
+      "max_new_tokens": 192
+    },
+    {
+      "id": "english-meeting-change",
+      "prompt": "Write a polite three-sentence message asking a colleague whether today's afternoon meeting can be moved to tomorrow morning.",
+      "tokens": [
+        2,
+        105,
+        2364,
+        107,
+        6974,
+        496,
+        54651,
+        1806,
+        236772,
+        54554,
+        3618,
+        10980,
+        496,
+        34926,
+        3363,
+        3124,
+        236789,
+        236751,
+        12399,
+        5395,
+        740,
+        577,
+        7808,
+        531,
+        16922,
+        5597,
+        236761,
+        106,
+        107,
+        105,
+        4368,
+        107
+      ],
+      "max_new_tokens": 96
+    }
+  ],
+  "persistent_request_settings": [
+    {
+      "id": 1,
+      "max_new_tokens": 16,
+      "cpu_workers": 4,
+      "body_workers": 1,
+      "fast_argmax": true,
+      "compact_logits": true,
+      "ngram": true,
+      "gpu_head": false,
+      "fixed_affinity": false,
+      "burst": false,
+      "record_blocks": true
+    },
+    {
+      "id": 2,
+      "max_new_tokens": 192,
+      "cpu_workers": 4,
+      "body_workers": 1,
+      "fast_argmax": true,
+      "compact_logits": true,
+      "ngram": true,
+      "gpu_head": false,
+      "fixed_affinity": false,
+      "burst": false,
+      "record_blocks": true
+    },
+    {
+      "id": 3,
+      "max_new_tokens": 16,
+      "cpu_workers": 4,
+      "body_workers": 1,
+      "fast_argmax": true,
+      "compact_logits": true,
+      "ngram": true,
+      "gpu_head": false,
+      "fixed_affinity": false,
+      "burst": false,
+      "record_blocks": true
+    },
+    {
+      "id": 4,
+      "max_new_tokens": 16,
+      "cpu_workers": 4,
+      "body_workers": 1,
+      "fast_argmax": true,
+      "compact_logits": true,
+      "ngram": true,
+      "gpu_head": false,
+      "fixed_affinity": false,
+      "burst": false,
+      "record_blocks": true
+    }
+  ],
+  "target_only_settings": {
+    "prefill": "AR4",
+    "decode": "one live pending row per AR4 execution",
+    "argmax": "std::max_element",
+    "burst_vote": false,
+    "QNN_profile_level": 0,
+    "requested_affinity_mask": "0xf0"
+  }
+}
