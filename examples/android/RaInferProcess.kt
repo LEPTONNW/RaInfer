@@ -26,14 +26,25 @@ class RaInferProcess private constructor(private val process: Process) : Closeab
         }
     }
 
-    @Synchronized
     fun generate(tokens: LongArray, maxNewTokens: Int = 96, ngram: Boolean = true): JSONObject {
-        check(process.isAlive) { "RaInfer worker is not running" }
         require(tokens.isNotEmpty() && tokens.size <= 2044 && tokens.all { it in 0L until 262144L })
+        val ids = JSONArray().apply { tokens.forEach { put(it) } }
+        return request(JSONObject().put("tokens", ids), maxNewTokens, ngram)
+    }
+
+    /** Experimental image path; requires a vision-qualified PTE and a locally encoded bundle. */
+    fun generateVision(bundle: File, maxNewTokens: Int = 96, ngram: Boolean = true): JSONObject {
+        require(bundle.isFile) { "Missing encoded image bundle" }
+        check(ready.optInt("vision_bundle_protocol", 0) == 1) { "Worker model is text-only" }
+        return request(JSONObject().put("vision_bundle", bundle.absolutePath), maxNewTokens, ngram)
+    }
+
+    @Synchronized
+    private fun request(request: JSONObject, maxNewTokens: Int, ngram: Boolean): JSONObject {
+        check(process.isAlive) { "RaInfer worker is not running" }
         require(maxNewTokens in 1..2048)
         val id = nextId++
-        val ids = JSONArray().apply { tokens.forEach { put(it) } }
-        val request = JSONObject().put("id", id).put("tokens", ids)
+        request.put("id", id)
             .put("max_new_tokens", maxNewTokens).put("cpu_workers", 4).put("body_workers", 1)
             .put("fast_argmax", true).put("compact_logits", true).put("ngram", ngram)
             .put("gpu_head", false).put("burst", false).put("fixed_affinity", false)
@@ -76,14 +87,17 @@ class RaInferProcess private constructor(private val process: Process) : Closeab
             runtimeDirectory: File,
             modelDirectory: File,
             workDirectory: File,
+            targetFile: File = File(modelDirectory, "gemma4-e2b-dflash2-verify-2k.pte"),
+            contractFile: File = File(modelDirectory, "io-contract.json"),
             diagnostics: (String) -> Unit = {}
         ): RaInferProcess {
             val executable = File(nativeLibraryDir, "libRaInferRunner.so")
             require(executable.isFile && executable.canExecute()) { "APK-packaged RaInfer executable missing" }
             require(runtimeDirectory.isDirectory && modelDirectory.isDirectory)
             require(workDirectory.isDirectory || workDirectory.mkdirs())
-            val assets = listOf("gemma4-e2b-dflash2-verify-2k.pte", "cpu-body-fp32.bin", "draft-manifest.json", "io-contract.json")
-                .map { File(modelDirectory, it).also { file -> require(file.isFile) { "Missing ${file.name}" } } }
+            val assets = listOf(targetFile, File(modelDirectory, "cpu-body-fp32.bin"),
+                File(modelDirectory, "draft-manifest.json"), contractFile)
+                .onEach { require(it.isFile) { "Missing ${it.name}" } }
             val builder = ProcessBuilder(listOf(executable.absolutePath, "--serve") + assets.map { it.absolutePath })
                 .directory(workDirectory)
             builder.environment()["LD_LIBRARY_PATH"] = "${nativeLibraryDir.absolutePath}:${runtimeDirectory.absolutePath}:/vendor/lib64"

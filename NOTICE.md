@@ -36,6 +36,19 @@ An integrator distributing binaries must also collect notices for all linked
 third-party components from the actual ExecuTorch build, including relevant
 tokenizer, Abseil, FlatBuffers, JSON and other dependencies.
 
+## llama.cpp / mtmd (optional experimental image helper)
+
+Source: https://github.com/ggml-org/llama.cpp
+
+PC reference revision: `a11f57ba93797579a5d1855ee216a31f10242676`.
+The separately built `rainfer_vision_encoder` links llama.cpp and mtmd from an
+external source checkout. They retain the upstream MIT license; a copy is at
+[licenses/llama.cpp-MIT.txt](licenses/llama.cpp-MIT.txt). This repository does not
+vendor that source, model weights or generated binaries. Binary distributors
+must also preserve notices for components linked from the actual checkout,
+including its JSON, image-decoding and GGML dependencies. See [VISION.md](docs/VISION.md)
+for the experimental bridge's validation limits.
+
 ## Gemma 4
 
 Reference model: https://huggingface.co/google/gemma-4-E2B-it

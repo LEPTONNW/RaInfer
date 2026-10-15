@@ -23,6 +23,7 @@
 #include <executorch/runtime/backend/interface.h>
 #include <executorch/runtime/backend/options.h>
 #include "planned_memory.h"
+#include "vision_embedding.h"
 
 namespace et=executorch;
 using et::runtime::EValue;
@@ -62,12 +63,27 @@ class PteTarget final:public mobile_dflash2::Target {
   bool record_blocks_=false;
   nlohmann::json blocks_=nlohmann::json::array();
   int qnn_profile_level_=0;
+  std::shared_ptr<mobile_dflash2::ImageRows> image_rows_;
+  VisionEmbeddingStats image_stats_;
+  bool vision_supported_=false;
   float logits_scale_=0;
   std::vector<float> history_=std::vector<float>(512*6144);
   std::vector<std::pair<float,int>> feature_encodings_;
   std::vector<std::pair<float,int>> cache_encodings_;
  public:
+  bool supports_vision_bundle() const { return vision_supported_; }
+  void set_images(std::shared_ptr<mobile_dflash2::ImageRows> images) {
+    if(images&&!vision_supported_)throw std::runtime_error("This PTE/IO contract is text-only; select the vision-qualified model");
+    image_rows_=std::move(images);image_stats_={};
+  }
+  void assert_image_prefill() const {
+    if(image_rows_&&(image_stats_.primary_rows!=image_rows_->image_rows()||image_stats_.ple_rows!=image_rows_->image_rows()))
+      throw std::runtime_error("Image vectors did not reach both target embedding boundaries; use the vision-qualified PTE");
+  }
+  nlohmann::json image_report() const {return {{"image_tokens",image_rows_?image_rows_->image_rows():0},
+    {"primary_rows_injected",image_stats_.primary_rows},{"ple_rows_padded",image_stats_.ple_rows}};}
   explicit PteTarget(const std::string& path,const nlohmann::json& contract={}):module_(path,et::extension::Module::LoadMode::Mmap) {
+    if(contract.contains("vision"))vision_supported_=contract.at("vision").value("operator",std::string())=="rainfer::embedding_4bit.dtype_out";
     if(const char* level=std::getenv("RABI_QNN_PROFILE_LEVEL"))qnn_profile_level_=std::stoi(level);
     if(qnn_profile_level_<0||qnn_profile_level_>2)throw std::runtime_error("Invalid QNN profile level");
     et::runtime::BackendOptions<1> options;check(options.set_option(QNN_RUNTIME_PROFILE_LEVEL,qnn_profile_level_),"set QNN profile level");
@@ -187,6 +203,7 @@ class PteTarget final:public mobile_dflash2::Target {
     }
     auto started=std::chrono::steady_clock::now();
     prepare_seconds_+=std::chrono::duration<double>(started-prepare_start).count();
+    VisionEmbeddingScope vision_scope(image_rows_.get(),position_,&image_stats_);
     auto result=module_.execute("kv_forward",args_);
     if(!result.ok())throw std::runtime_error("QNN execution failed: "+std::to_string(static_cast<int>(result.error())));
     execution_seconds_+=std::chrono::duration<double>(std::chrono::steady_clock::now()-started).count();

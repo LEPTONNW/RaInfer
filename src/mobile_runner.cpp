@@ -7,6 +7,7 @@
 #include <mobile_dflash2/cpu_selector.h>
 #include <mobile_dflash2/hybrid_draft.h>
 #include "burst_vote.h"
+#include "vision_bundle.h"
 #include <nlohmann/json.hpp>
 using json=nlohmann::json;
 class PortableDraft:public mobile_dflash2::Draft {
@@ -281,6 +282,7 @@ static json run_request(PteTarget& target,PortableDraft& draft,const std::vector
       std::copy_n(prompt.begin()+offset,live,block.begin());
       auto result=target.stage(block);pending=result.target_next[live-1];target.commit(live);
     }
+    target.assert_image_prefill();
     auto prime_start=std::chrono::steady_clock::now();draft.prime_context();
     double prime_seconds=std::chrono::duration<double>(std::chrono::steady_clock::now()-prime_start).count();
     auto prefilled=std::chrono::steady_clock::now();auto prefill_execution=target.execution_seconds();
@@ -313,7 +315,7 @@ static json run_request(PteTarget& target,PortableDraft& draft,const std::vector
       {"finish_reason",eos(output.back())?"stop":"length"},
       {"draft_projected_feature_rows",draft.projected_feature_rows()},{"prefill_draft_context_seconds",prime_seconds},
       {"decode_tokens_per_second",elapsed>0?stats.emitted/elapsed:0.0},
-      {"prefill_seconds",std::chrono::duration<double>(prefilled-start).count()}};
+      {"prefill_seconds",std::chrono::duration<double>(prefilled-start).count()},{"vision",target.image_report()}};
 }
 static void protocol(const json& message){std::cout<<"@DFLASH2 "<<message.dump()<<std::endl;}
 int main(int argc,char**argv) {
@@ -335,6 +337,7 @@ int main(int argc,char**argv) {
 #endif
       PortableDraft draft(target,argv[3],manifest,argv[4]);
       protocol({{"event","ready"},{"protocol",1},{"context",target.context_capacity()},
+        {"vision_bundle_protocol",target.supports_vision_bundle()?1:0},
         {"load_seconds",std::chrono::duration<double>(std::chrono::steady_clock::now()-loaded).count()}});
       std::string line;size_t requests=0;
       while(std::getline(std::cin,line)) {
@@ -344,13 +347,23 @@ int main(int argc,char**argv) {
           auto request=json::parse(line);id=request.at("id").get<uint64_t>();
           if(request.value("command",std::string())=="shutdown")break;
           bool burst=request.value("burst",false);BurstVote vote;if(burst)vote.enable();
-          auto report=run_request(target,draft,request.at("tokens").get<std::vector<int64_t>>(),
+          std::vector<int64_t> request_tokens;
+          json vision_timing=json::object();
+          target.set_images(nullptr);
+          if(request.contains("vision_bundle")) {
+            if(request.contains("tokens"))throw std::runtime_error("Use tokens or vision_bundle, not both");
+            auto bundle=VisionBundle::load(request.at("vision_bundle").get<std::string>());
+            request_tokens=std::move(bundle.tokens);target.set_images(std::move(bundle.images));vision_timing=std::move(bundle.encoder_timing);
+          } else request_tokens=request.at("tokens").get<std::vector<int64_t>>();
+          auto report=run_request(target,draft,request_tokens,
             request.at("max_new_tokens").get<size_t>(),false,request.value("ngram",true),request.value("cpu_workers",4u),
             burst,request.value("body_workers",1u),request.value("fast_argmax",false),request.value("profile",false),
             request.value("compact_logits",false),request.value("full_vocabulary",false),request.value("fixed_affinity",false),request.value("gpu_head",false),request.value("gpu_check",false),request.value("record_blocks",false));
           report["persistent_worker"]=true;report["request_index"]=++requests;
+          if(!vision_timing.empty())report["vision_encoder_timing"]=vision_timing;
+          target.set_images(nullptr);
           protocol({{"event","result"},{"id",id},{"report",report}});
-        }catch(const std::exception& error){target.abort();protocol({{"event","error"},{"id",id},{"message",error.what()}});}
+        }catch(const std::exception& error){target.abort();target.set_images(nullptr);protocol({{"event","error"},{"id",id},{"message",error.what()}});}
       }
       return 0;
     }

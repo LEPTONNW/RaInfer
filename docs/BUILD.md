@@ -12,8 +12,9 @@ ctest --test-dir build/host -C Release --output-on-failure
 python tools/check_source_package.py
 ```
 
-Four CTest cases cover pending-token/prefix transactions, first-index argmax,
-signed INT8 and selected-vocabulary projection, and the hybrid n-gram fallback.
+Five CTest cases cover pending-token/prefix transactions, first-index argmax,
+signed INT8 and selected-vocabulary projection, the hybrid n-gram fallback, and
+image-row scaling, PLE padding and AR4 boundaries.
 `preprocess_fixture` and `cached_body_fixture` are helper executables for external
 numerical comparisons, not additional full-model tests.
 
@@ -85,3 +86,9 @@ state; Android can restrict the performance-core cpuset in the background.
 
 No conversion graph or full inference is run by host CI. The existing qualified
 APK/model files were not replaced by preparing this source release.
+
+## Optional experimental image helper
+
+See [VISION.md](VISION.md) for the separately built llama.cpp/mtmd CPU encoder,
+vision-specific PTE metadata preparation, app integration and pending device
+qualification. Its successful build does not validate NPU image inference.

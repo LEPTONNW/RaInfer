@@ -1,0 +1,184 @@
+# Experimental static-image input / 실험용 이미지 입력
+
+This branch adds an **unqualified, experimental** Gemma 4 E2B image bridge.
+PC mmproj encoding and GGUF color-reference checks have passed; **Android
+NPU image inference and text regression have not yet been tested on the phone**.
+The existing text-only release and APK are unchanged. Do not treat host tests,
+successful compilation, or a PC reference answer as NPU vision qualification.
+
+현재 PC에서 이미지 인코딩과 GGUF 비교 답변까지 확인했습니다. S22에서
+NPU 이미지 입력과 기존 텍스트 회귀 검증을 완료하기 전에는 배포용으로
+판정하지 않습니다. 앱이나 APK는 이 저장소에서 제공하지 않습니다.
+
+## Architecture
+
+1. `rainfer_vision_encoder` uses llama.cpp **mtmd on CPU** to preprocess one
+   static image and run its compatible Gemma 4 E2B `mmproj-F16.gguf`.
+2. It writes a `rainfer-vision-v1` JSON manifest and a neighboring FP32 binary.
+   This contains formatted prompt tokens, projected image vectors and positions.
+3. `mobile_runner` reads the bundle. A portable ExecuTorch embedding hook merges
+   the vectors into the target input before the existing QNN decoder graphs.
+4. CPU DFlash2 drafting and NPU AR4 verification then use the normal transaction
+   path. The draft was trained for text; image-conditioned acceptance and quality
+   are unmeasured and must be checked independently.
+
+The GPU is not used in this image path. The mmproj is not itself a QNN/NPU model.
+Audio, video, other Gemma sizes, noncausal image attention and arbitrary
+mmproj/target combinations are unsupported. Gemma 4 E2B's causal image handling
+is required. The target remains compiled for 2,048 positions; image rows consume
+that same budget. No larger-context claim follows from the original model.
+
+## Separate assets and compatibility
+
+The PC experiment used llama.cpp revision
+`a11f57ba93797579a5d1855ee216a31f10242676` and the Unsloth Gemma 4 E2B
+GGUF/mmproj revision `0314792d7f1f7e229411f620751375812bb9faf2`.
+
+| Asset | Purpose |
+|---|---|
+| Matching `mmproj-F16.gguf` | CPU vision encoder/projector; SHA256 `140be8d7849741f88c50757d529b84373ee8e27052cc2236855b537f4a8215fa` |
+| Weightless Gemma 4 E2B GGUF | Exact tokenizer and model metadata, no decoder weights; create with `make_vision_vocab.py` |
+| Vision-enabled target PTE | Original target with the portable embedding operator descriptor aliased |
+| `io-contract.vision.json` | Matching target IO metadata plus experimental vision contract |
+| Existing DFlash2 companions | CPU body, embedding, head, selector, vocabulary and manifest; unchanged weights |
+
+`prepare_vision_pte.py` requires the exact source hash, refuses to overwrite
+the original, and checks every other byte. It modifies only the shared portable
+operator name from `quantized_decomposed::embedding_4bit.dtype_out` to
+`rainfer::embedding_4bit.dtype_out`. QNN context bytes and weights do not change.
+This PTE requires the new kernel; the old runtime will not load it. Merely adding
+a vision flag to an old IO file does not make an old PTE support images. The
+worker checks that all image rows reached both embedding boundaries.
+
+mtmd emits projected image vectors that are already at the desired scale.
+The existing QNN decoder multiplies its primary embedding by `sqrt(1536)`.
+The bridge therefore supplies `image / sqrt(1536)`, while image positions use
+pad token `0` in the PLE lookup. Normal text rows use the original registered
+ExecuTorch dequantization kernel. With no image bundle, the hook delegates the
+entire call unchanged. These semantics still require physical-device checks.
+
+## Build the optional encoder
+
+Obtain the pinned llama.cpp source separately. The helper is a standalone
+executable linked to llama/mtmd; it is not linked into the NPU worker.
+
+```sh
+cmake -S tools/vision -B build/vision-host \
+  -DLLAMA_CPP_SOURCE=/path/to/llama.cpp -DCMAKE_BUILD_TYPE=Release
+cmake --build build/vision-host --config Release --target rainfer_vision_encoder --parallel 4
+
+cmake -S tools/vision -B build/vision-android -G Ninja \
+  -DLLAMA_CPP_SOURCE=/path/to/llama.cpp \
+  -DCMAKE_TOOLCHAIN_FILE=/path/to/ndk/build/cmake/android.toolchain.cmake \
+  -DANDROID_ABI=arm64-v8a -DANDROID_PLATFORM=android-28 \
+  -DCMAKE_BUILD_TYPE=Release -DGGML_CPU_ARM_ARCH=armv8.2-a+dotprod
+cmake --build build/vision-android --target rainfer_vision_encoder --parallel 4
+```
+
+The normal Android engine build also builds the new embedding kernel. Rebuild
+the worker and probes using [BUILD.md](BUILD.md). Dependencies and SDK rights
+remain separate. The helper uses 1..4 CPU threads and requests the performance
+cluster on SM8450 when Android permits it; it does not override cpuset restrictions.
+
+## Prepare model metadata and a prompt
+
+`make_vision_vocab.py` requires Python, numpy and the pinned llama.cpp
+`gguf-py` package. It copies GGUF metadata exactly and writes zero tensors.
+`prepare_vision_pte.py` requires Python 3.11+, flatbuffers and generated
+ExecuTorch `executorch_flatbuffer` schema bindings matching the source PTE.
+`--schema-dir` is the parent of that Python package.
+
+```sh
+python tools/make_vision_vocab.py --gguf-python /path/to/llama.cpp/gguf-py \
+  --source gemma-4-E2B-it-Q4_K_M.gguf --output gemma4-e2b-vision-vocab.gguf
+python tools/prepare_vision_pte.py --schema-dir /path/to/schema-bindings \
+  --source original-target.pte --expected-sha256 EXACT_SOURCE_SHA256 \
+  --output experimental/gemma4-e2b-dflash2-vision-verify-2k.pte \
+  --io-contract io-contract.json
+
+python tools/make_vision_prompt.py --tokenizer-dir /path/to/local/tokenizer \
+  --prompt "What is the dominant color in the image? Answer with one color word." \
+  --output image-prompt.txt
+```
+
+The prompt tool uses the local Hugging Face chat template, no network access,
+one `<__media__>` marker and thinking disabled. It requires a compatible
+`transformers` tokenizer installation, not remote custom code. Do not manually
+insert a variable number of placeholder IDs into a text-only prompt.
+
+## Encode, then generate
+
+All paths below are examples on the machine/device running each process.
+In normal encoder mode, `--text-model` can be the weightless GGUF.
+
+```sh
+rainfer_vision_encoder --text-model gemma4-e2b-vision-vocab.gguf \
+  --mmproj mmproj-F16.gguf --image red.png --prompt-file image-prompt.txt \
+  --output session/image.bundle.json --threads 4 --image-max-tokens 256
+```
+
+For a PC GGUF comparison only, pass the full Q4 GGUF as `--text-model` and
+add `--reference-max-new 16`. That reference does **not** execute QNN or DFlash2.
+Encoder stdout is one JSON summary; diagnostics go to stderr. The manifest
+records image load, preprocessing and encoding time separately. Total image
+latency includes loading a fresh encoder process; those times are not generation
+tokens/s. This first implementation does not keep the vision encoder resident.
+
+Start the persistent NPU worker with the experimental PTE and matching IO:
+
+```sh
+mobile_runner --serve gemma4-e2b-dflash2-vision-verify-2k.pte \
+  cpu-body-fp32.bin draft-manifest.json io-contract.vision.json
+```
+
+Wait for `ready` with `vision_bundle_protocol: 1`, then send JSONL:
+
+```json
+{"id":1,"vision_bundle":"/absolute/path/image.bundle.json","max_new_tokens":64,"cpu_workers":4,"body_workers":1,"fast_argmax":true,"compact_logits":true,"ngram":true,"gpu_head":false}
+```
+
+Supply either `tokens` or `vision_bundle`, never both. Bundle binary paths must
+be basenames beside the manifest. The worker validates dimensions, finite values,
+token IDs and nonoverlapping image spans. Treat all bundles as local trusted
+assets and enforce your app's own storage access boundaries. The report's
+`vision` object contains `image_tokens`, `primary_rows_injected` and
+`ple_rows_padded`; all three must agree. `vision_encoder_timing` is carried from
+the manifest, not a new measurement made by the worker.
+
+The [Kotlin adapter](../examples/android/RaInferProcess.kt) accepts explicit
+`targetFile` and `contractFile` arguments and adds `generateVision(bundle)`.
+Your app must run the encoder, wait for successful exit, then invoke the worker.
+Drain both processes' stderr, set deadlines and own their lifecycle. An Android
+integrator may package the encoder executable as `libRaInferVisionEncoder.so`
+in the extracted native-library directory, as with the worker; do not call
+`System.loadLibrary` on it. Executable packaging is described in
+[INTEGRATION.md](INTEGRATION.md). There is no required companion app.
+
+## Qualification before public model upload
+
+1. Compare original text PTE and experimental PTE with identical Java,
+   Korean and English token inputs: output tokens, prefill predictions and native
+   U16 logits must match. `pte_probe ... IO.json --prefill-logits output.u16`
+   dumps the last AR4 prefill block before commit.
+2. For red/blue fixtures, encode images, then run target-only
+   `pte_probe MODEL.pte BUNDLE.json 16 result.json features.f32 IO.json --vision-bundle`.
+   Check both image boundaries were populated and that answers depend on the image.
+3. Run the same bundles with DFlash2. Target-only and speculative output tokens
+   must match under the same greedy policy. Use `tools/compare_vision_reports.py`.
+4. Check request isolation by sending image, text, then a different image through
+   one persistent worker. A previous image must not leak into a later request.
+5. Record image encode, target prefill, decode, acceptance and thermal/foreground
+   state separately. Report measured device data only. Recheck selected text
+   speed against the same build/environment; historical 19.1 t/s is not a vision
+   performance claim.
+
+No step above authorizes replacing an existing installed model or APK. The PC
+preparation produces separate experimental artifacts. Phone tests are pending.
+
+## Licensing
+
+RaInfer integration is MIT. llama.cpp/mtmd is MIT and is credited in
+[NOTICE.md](../NOTICE.md). The helper links additional upstream components;
+binary distributors must collect notices from their actual dependency build.
+Model assets retain their own licenses. No SDK, model, app or runtime binary is
+distributed in this source repository.

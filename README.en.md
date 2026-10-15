@@ -12,6 +12,11 @@ The engine has been tested on a Galaxy S22 Ultra with Snapdragon 8 Gen 1 (SM8450
 
 **To connect your own app, start with the [app-independent integration guide](docs/INTEGRATION.md) (Korean).** Integration uses a JSONL process interface and does not require a particular chat app. Instead of a UI or application distribution, the repository provides a [Kotlin process adapter example](examples/android/RaInferProcess.kt).
 
+**Image-input development:** an [experimental bridge](docs/VISION.md) runs a
+separate CPU mmproj encoder and forwards projected image features to the NPU
+target. Red/blue PC GGUF reference checks passed; Android NPU image inference
+and text regression are still pending. The existing release APK is unchanged.
+
 ## What is this engine for?
 
 Running a relatively large target model one token at a time on a mobile device repeatedly incurs the cost of processing its weights and execution graphs. RaInfer aims to confirm several tokens per target execution by verifying a batch of proposals from a smaller drafter.
@@ -44,7 +49,7 @@ The project does not provide a general-purpose LLM server, HTTP API server, chat
 | SDK | QAIRT `2.37.0.250724` |
 | ExecuTorch | Installation based on `ca56e1ffdba1c902d9202021d7297982d3501439` |
 
-Support is not claimed for every Gemma 4 size, Qwen, generic GGUF files, or arbitrary public DFlash/MTP weights. Other Snapdragon generations and NPUs require separate graph conversion and validation. The current path is text-only and does not provide vision, audio, or MTP.
+Support is not claimed for every Gemma 4 size, Qwen, generic GGUF files, or arbitrary public DFlash/MTP weights. Other Snapdragon generations and NPUs require separate graph conversion and validation. The device-qualified release remains text-only. Vision is under development in the experimental path above; audio and MTP are not provided.
 
 ### Which acceleration model does it use?
 
