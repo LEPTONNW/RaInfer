@@ -35,6 +35,13 @@ The PC experiment used llama.cpp revision
 `a11f57ba93797579a5d1855ee216a31f10242676` and the Unsloth Gemma 4 E2B
 GGUF/mmproj revision `0314792d7f1f7e229411f620751375812bb9faf2`.
 
+The mmproj was **not created by this project and is not redistributed in our
+model package**. Google provides the [original model/vision weights](https://huggingface.co/google/gemma-4-E2B-it).
+The exact tested GGUF conversion is from
+[Unsloth](https://huggingface.co/unsloth/gemma-4-E2B-it-GGUF/blob/0314792d7f1f7e229411f620751375812bb9faf2/mmproj-F16.gguf);
+[download the matching file upstream](https://huggingface.co/unsloth/gemma-4-E2B-it-GGUF/resolve/0314792d7f1f7e229411f620751375812bb9faf2/mmproj-F16.gguf).
+Verify the SHA256 below. The engine receives a local path to that external file.
+
 | Asset | Purpose |
 |---|---|
 | Matching `mmproj-F16.gguf` | CPU vision encoder/projector; SHA256 `140be8d7849741f88c50757d529b84373ee8e27052cc2236855b537f4a8215fa` |
