@@ -1,0 +1,55 @@
+{
+    "purpose":  "Metadata only; weights are not included or downloaded. Hashes identify the measured reference assets, not a generic compatibility promise.",
+    "assets":  [
+                   {
+                       "name":  "gemma4-e2b-dflash2-verify-2k.pte",
+                       "bytes":  3361310336,
+                       "sha256":  "c05fe24cb87fe20f3c2fdf3bb942755486f4c34785ad4d28a5b5546a7378983b"
+                   },
+                   {
+                       "name":  "cpu-body-fp32.bin",
+                       "bytes":  36327406,
+                       "sha256":  "c5c8041ee084fbb319f8d6d2987efe47207a7c9ee051cefed215466467d6c73d"
+                   },
+                   {
+                       "name":  "embedding-cpu-fp32.pte",
+                       "bytes":  402654336,
+                       "sha256":  "009fd99eded656aecd6d9624cdc8cf4fcdcc2e5463073bf627a6097aa4b78221"
+                   },
+                   {
+                       "name":  "head-cpu-int8.bin",
+                       "bytes":  101711888,
+                       "sha256":  "08ee78145df712d8658a6401df294f5b81786f5f0c872358c5b07a20e7701b76"
+                   },
+                   {
+                       "name":  "selector-cpu-fp32.bin",
+                       "bytes":  67158040,
+                       "sha256":  "6e634054185fafd05f2db07b3363a088ac382d6105ef9f821e030934f0c9830a"
+                   },
+                   {
+                       "name":  "active-vocabulary.u32",
+                       "bytes":  21684,
+                       "sha256":  "e6a4aab3893725158aea29a728132132e45ae3dbf694f7117814c600f880aea9"
+                   },
+                   {
+                       "name":  "draft-manifest.json",
+                       "bytes":  3236,
+                       "sha256":  "529f58fdfa088889c56e30e950413934edcaf091c6dc773122c3375a363aa001"
+                   },
+                   {
+                       "name":  "io-contract.json",
+                       "bytes":  9348,
+                       "sha256":  "9ed257df7cb4ea267bca8e719d5884ef51b0eae338345bce20529c0ae26f1c48"
+                   },
+                   {
+                       "name":  "gemma4-e2b-tokenizer.json",
+                       "bytes":  32169626,
+                       "sha256":  "cc8d3a0ce36466ccc1278bf987df5f71db1719b9ca6b4118264f45cb627bfe0f"
+                   },
+                   {
+                       "name":  "gemma4-e2b-tokenizer.gguf",
+                       "bytes":  15783335,
+                       "sha256":  "6c76c488f73d72c96681bfa6b48508207c6c18b91dec403151a929b23e4e1cd7"
+                   }
+               ]
+}

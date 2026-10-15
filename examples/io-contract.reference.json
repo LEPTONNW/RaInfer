@@ -1,0 +1,489 @@
+{
+  "outputs": [
+    {
+      "index": 0,
+      "node": "aten_mul_tensor_344",
+      "shape": [
+        1,
+        4,
+        262144
+      ],
+      "dtype": "torch.uint16",
+      "scale": 0.0008984964806586504,
+      "zero_point": 33388
+    },
+    {
+      "index": 1,
+      "node": "aten_permute_copy_default_10",
+      "shape": [
+        1,
+        1,
+        256,
+        4
+      ],
+      "dtype": "torch.uint16",
+      "scale": 3.550304609234445e-05,
+      "zero_point": 40321
+    },
+    {
+      "index": 2,
+      "node": "aten_permute_copy_default_27",
+      "shape": [
+        1,
+        1,
+        256,
+        4
+      ],
+      "dtype": "torch.uint16",
+      "scale": 2.48280557570979e-05,
+      "zero_point": 30990
+    },
+    {
+      "index": 3,
+      "node": "aten_permute_copy_default_44",
+      "shape": [
+        1,
+        1,
+        256,
+        4
+      ],
+      "dtype": "torch.uint16",
+      "scale": 3.082077455474064e-05,
+      "zero_point": 26322
+    },
+    {
+      "index": 4,
+      "node": "aten_permute_copy_default_61",
+      "shape": [
+        1,
+        1,
+        256,
+        4
+      ],
+      "dtype": "torch.uint16",
+      "scale": 3.1270403269445524e-05,
+      "zero_point": 32677
+    },
+    {
+      "index": 5,
+      "node": "aten_permute_copy_default_78",
+      "shape": [
+        1,
+        1,
+        512,
+        4
+      ],
+      "dtype": "torch.uint16",
+      "scale": 2.571563709352631e-05,
+      "zero_point": 23940
+    },
+    {
+      "index": 6,
+      "node": "aten_permute_copy_default_95",
+      "shape": [
+        1,
+        1,
+        256,
+        4
+      ],
+      "dtype": "torch.uint16",
+      "scale": 3.3204920327989385e-05,
+      "zero_point": 39650
+    },
+    {
+      "index": 7,
+      "node": "aten_permute_copy_default_112",
+      "shape": [
+        1,
+        1,
+        256,
+        4
+      ],
+      "dtype": "torch.uint16",
+      "scale": 2.6920279196929187e-05,
+      "zero_point": 26441
+    },
+    {
+      "index": 8,
+      "node": "aten_permute_copy_default_129",
+      "shape": [
+        1,
+        1,
+        256,
+        4
+      ],
+      "dtype": "torch.uint16",
+      "scale": 3.1990231946110725e-05,
+      "zero_point": 39142
+    },
+    {
+      "index": 9,
+      "node": "aten_permute_copy_default_146",
+      "shape": [
+        1,
+        1,
+        256,
+        4
+      ],
+      "dtype": "torch.uint16",
+      "scale": 4.1876039176713675e-05,
+      "zero_point": 30220
+    },
+    {
+      "index": 10,
+      "node": "aten_permute_copy_default_163",
+      "shape": [
+        1,
+        1,
+        512,
+        4
+      ],
+      "dtype": "torch.uint16",
+      "scale": 2.5118564735748805e-05,
+      "zero_point": 27519
+    },
+    {
+      "index": 11,
+      "node": "aten_permute_copy_default_180",
+      "shape": [
+        1,
+        1,
+        256,
+        4
+      ],
+      "dtype": "torch.uint16",
+      "scale": 3.733946869033389e-05,
+      "zero_point": 23924
+    },
+    {
+      "index": 12,
+      "node": "aten_permute_copy_default_197",
+      "shape": [
+        1,
+        1,
+        256,
+        4
+      ],
+      "dtype": "torch.uint16",
+      "scale": 4.565647031995468e-05,
+      "zero_point": 33682
+    },
+    {
+      "index": 13,
+      "node": "aten_permute_copy_default_214",
+      "shape": [
+        1,
+        1,
+        256,
+        4
+      ],
+      "dtype": "torch.uint16",
+      "scale": 4.445399827091023e-05,
+      "zero_point": 32466
+    },
+    {
+      "index": 14,
+      "node": "aten_permute_copy_default_231",
+      "shape": [
+        1,
+        1,
+        256,
+        4
+      ],
+      "dtype": "torch.uint16",
+      "scale": 4.014027945231646e-05,
+      "zero_point": 43050
+    },
+    {
+      "index": 15,
+      "node": "aten_permute_copy_default_248",
+      "shape": [
+        1,
+        1,
+        512,
+        4
+      ],
+      "dtype": "torch.uint16",
+      "scale": 2.5027929950738326e-05,
+      "zero_point": 21147
+    },
+    {
+      "index": 16,
+      "node": "aten_rms_norm_default_4",
+      "shape": [
+        1,
+        1,
+        4,
+        256
+      ],
+      "dtype": "torch.uint16",
+      "scale": 0.0003572946588974446,
+      "zero_point": 27203
+    },
+    {
+      "index": 17,
+      "node": "aten_rms_norm_default_12",
+      "shape": [
+        1,
+        1,
+        4,
+        256
+      ],
+      "dtype": "torch.uint16",
+      "scale": 0.0003580939373932779,
+      "zero_point": 23072
+    },
+    {
+      "index": 18,
+      "node": "aten_rms_norm_default_20",
+      "shape": [
+        1,
+        1,
+        4,
+        256
+      ],
+      "dtype": "torch.uint16",
+      "scale": 0.00039721844950690866,
+      "zero_point": 39548
+    },
+    {
+      "index": 19,
+      "node": "aten_rms_norm_default_28",
+      "shape": [
+        1,
+        1,
+        4,
+        256
+      ],
+      "dtype": "torch.uint16",
+      "scale": 0.000348672125255689,
+      "zero_point": 36995
+    },
+    {
+      "index": 20,
+      "node": "aten_rms_norm_default_36",
+      "shape": [
+        1,
+        1,
+        4,
+        512
+      ],
+      "dtype": "torch.uint16",
+      "scale": 0.00047741824528202415,
+      "zero_point": 19136
+    },
+    {
+      "index": 21,
+      "node": "aten_rms_norm_default_44",
+      "shape": [
+        1,
+        1,
+        4,
+        256
+      ],
+      "dtype": "torch.uint16",
+      "scale": 0.0003962698392570019,
+      "zero_point": 39955
+    },
+    {
+      "index": 22,
+      "node": "aten_rms_norm_default_52",
+      "shape": [
+        1,
+        1,
+        4,
+        256
+      ],
+      "dtype": "torch.uint16",
+      "scale": 0.0003230959118809551,
+      "zero_point": 46027
+    },
+    {
+      "index": 23,
+      "node": "aten_rms_norm_default_60",
+      "shape": [
+        1,
+        1,
+        4,
+        256
+      ],
+      "dtype": "torch.uint16",
+      "scale": 0.00041298288851976395,
+      "zero_point": 38323
+    },
+    {
+      "index": 24,
+      "node": "aten_rms_norm_default_68",
+      "shape": [
+        1,
+        1,
+        4,
+        256
+      ],
+      "dtype": "torch.uint16",
+      "scale": 0.00043665399425663054,
+      "zero_point": 29025
+    },
+    {
+      "index": 25,
+      "node": "aten_rms_norm_default_76",
+      "shape": [
+        1,
+        1,
+        4,
+        512
+      ],
+      "dtype": "torch.uint16",
+      "scale": 0.0005380394286476076,
+      "zero_point": 39659
+    },
+    {
+      "index": 26,
+      "node": "aten_rms_norm_default_84",
+      "shape": [
+        1,
+        1,
+        4,
+        256
+      ],
+      "dtype": "torch.uint16",
+      "scale": 0.00042624471825547516,
+      "zero_point": 28874
+    },
+    {
+      "index": 27,
+      "node": "aten_rms_norm_default_92",
+      "shape": [
+        1,
+        1,
+        4,
+        256
+      ],
+      "dtype": "torch.uint16",
+      "scale": 0.00040000260923989117,
+      "zero_point": 34209
+    },
+    {
+      "index": 28,
+      "node": "aten_rms_norm_default_100",
+      "shape": [
+        1,
+        1,
+        4,
+        256
+      ],
+      "dtype": "torch.uint16",
+      "scale": 0.0004267415788490325,
+      "zero_point": 36956
+    },
+    {
+      "index": 29,
+      "node": "aten_rms_norm_default_108",
+      "shape": [
+        1,
+        1,
+        4,
+        256
+      ],
+      "dtype": "torch.uint16",
+      "scale": 0.00044716562842950225,
+      "zero_point": 29781
+    },
+    {
+      "index": 30,
+      "node": "aten_rms_norm_default_116",
+      "shape": [
+        1,
+        1,
+        4,
+        512
+      ],
+      "dtype": "torch.uint16",
+      "scale": 0.0006708502187393606,
+      "zero_point": 32562
+    },
+    {
+      "index": 31,
+      "node": "llama_fallback_default",
+      "shape": [
+        1,
+        4,
+        1536
+      ],
+      "dtype": "torch.float32"
+    },
+    {
+      "index": 32,
+      "node": "aten_mul_tensor_159",
+      "shape": [
+        1,
+        4,
+        1536
+      ],
+      "dtype": "torch.float32"
+    },
+    {
+      "index": 33,
+      "node": "aten_mul_tensor_247",
+      "shape": [
+        1,
+        4,
+        1536
+      ],
+      "dtype": "torch.float32"
+    },
+    {
+      "index": 34,
+      "node": "llama_fallback_default_10",
+      "shape": [
+        1,
+        4,
+        1536
+      ],
+      "dtype": "torch.float32"
+    }
+  ],
+  "features": [
+    {
+      "index": 31,
+      "node": "llama_fallback_default",
+      "shape": [
+        1,
+        4,
+        1536
+      ],
+      "dtype": "torch.float32"
+    },
+    {
+      "index": 32,
+      "node": "aten_mul_tensor_159",
+      "shape": [
+        1,
+        4,
+        1536
+      ],
+      "dtype": "torch.float32"
+    },
+    {
+      "index": 33,
+      "node": "aten_mul_tensor_247",
+      "shape": [
+        1,
+        4,
+        1536
+      ],
+      "dtype": "torch.float32"
+    },
+    {
+      "index": 34,
+      "node": "llama_fallback_default_10",
+      "shape": [
+        1,
+        4,
+        1536
+      ],
+      "dtype": "torch.float32"
+    }
+  ],
+  "rows": 4
+}

@@ -1,0 +1,36 @@
+#version 450
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 LEPTONNW
+// Packed signed INT8 dot product, no 8-bit storage/float16/subgroup features.
+layout(local_size_x=64) in;
+layout(set=0,binding=0,std430) readonly buffer Weights {uint weights[];};
+layout(set=0,binding=1,std430) readonly buffer WeightScales {float scales[];};
+layout(set=0,binding=2,std430) readonly buffer Queries {uint queries[];};
+layout(set=0,binding=3,std430) readonly buffer QueryScales {float qs[];};
+layout(set=0,binding=4,std430) readonly buffer Vocabulary {uint ids[];};
+layout(set=0,binding=5,std430) writeonly buffer Output {float logits[];};
+layout(push_constant) uniform Parameters {uint count;uint words;uint use_ids;} p;
+ivec4 unpack_signed(uint x){return ivec4(int(x<<24)>>24,int(x<<16)>>24,int(x<<8)>>24,int(x)>>24);}
+int dot4(ivec4 a,ivec4 b){return a.x*b.x+a.y*b.y+a.z*b.z+a.w*b.w;}
+shared ivec3 partials[64];
+void main(){
+    uint i=gl_WorkGroupID.x+gl_WorkGroupID.y*gl_NumWorkGroups.x;if(i>=p.count)return;
+    uint lane=gl_LocalInvocationID.x;
+    uint token=p.use_ids!=0?ids[i]:i;
+    int a=0,b=0,c=0;
+    for(uint w=lane;w<p.words;w+=64){
+        ivec4 weight=unpack_signed(weights[token*p.words+w]);
+        a+=dot4(weight,unpack_signed(queries[w]));
+        b+=dot4(weight,unpack_signed(queries[p.words+w]));
+        c+=dot4(weight,unpack_signed(queries[2*p.words+w]));
+    }
+    partials[lane]=ivec3(a,b,c);barrier();
+    for(uint stride=32;stride>0;stride>>=1){if(lane<stride)partials[lane]+=partials[lane+stride];barrier();}
+    if(lane!=0)return;
+    a=partials[0].x;b=partials[0].y;c=partials[0].z;
+    // precise prohibits reassociation: match CpuHead's two FP32 multiplications.
+    precise float x=float(a)*scales[token]*qs[0];
+    precise float y=float(b)*scales[token]*qs[1];
+    precise float z=float(c)*scales[token]*qs[2];
+    logits[i]=x;logits[p.count+i]=y;logits[2*p.count+i]=z;
+}

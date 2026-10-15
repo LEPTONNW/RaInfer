@@ -1,0 +1,23 @@
+name: Host contract tests
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  host:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Configure
+        run: cmake -S . -B build/host -DBUILD_TESTING=ON
+      - name: Build
+        run: cmake --build build/host --config Release --parallel 2
+      - name: Test
+        run: ctest --test-dir build/host -C Release --output-on-failure
+      - name: Check public examples and Python syntax
+        run: python tools/check_source_package.py

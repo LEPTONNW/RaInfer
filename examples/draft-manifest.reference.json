@@ -1,0 +1,89 @@
+{
+    "version":  1,
+    "algorithm":  "mobile-dflash2-derived",
+    "backend":  "executorch-cpu-cached",
+    "weight_dtype":  "float32_body_and_int8_head",
+    "activation_dtype":  "float32_body_and_dynamic_int8_head",
+    "config":  {
+                   "vocab_size":  262144,
+                   "target_hidden_size":  1536,
+                   "feature_layers":  [
+                                          3,
+                                          13,
+                                          23,
+                                          33
+                                      ],
+                   "hidden_size":  384,
+                   "intermediate_size":  1536,
+                   "layers":  3,
+                   "head_dim":  64,
+                   "kv_heads":  2,
+                   "block_size":  4,
+                   "context_window":  512,
+                   "conv_kernel_size":  2,
+                   "conv_group_size":  16,
+                   "selector_rank":  32,
+                   "selector_top_k":  16,
+                   "mask_token_id":  4,
+                   "rope_theta":  10000.0
+               },
+    "file":  "cpu-body-fp32.bin",
+    "sha256":  "c5c8041ee084fbb319f8d6d2987efe47207a7c9ee051cefed215466467d6c73d",
+    "source_checkpoint_sha256":  "f4fb0c064d9253b5bba373a4df1cd084f21cc6b5863ff0de5cdca7def9ca9474",
+    "corpus_sha256":  "bcb7fc307bf1b2cb0487bf36c7aa2753e3839d91bb46fae0d29d4118cdc0f2d9",
+    "output_contract":  "hidden-cpu-int8-head",
+    "selector_file":  "selector-cpu-fp32.bin",
+    "selector_sha256":  "6e634054185fafd05f2db07b3363a088ac382d6105ef9f821e030934f0c9830a",
+    "teacher_sha256":  "38faf5d2337d9fb2b75b2ddca0fb3c63d916b2795c55bff6a1b6b92c027e8c7b",
+    "tokenizer_sha256":  "cc8d3a0ce36466ccc1278bf987df5f71db1719b9ca6b4118264f45cb627bfe0f",
+    "calibration_role":  "train",
+    "calibration_cases":  64,
+    "qnn_delegates":  [
+
+                      ],
+    "cpu_fallback_ops":  [
+
+                         ],
+    "diagnostic_only":  true,
+    "phone_validated":  false,
+    "npu_drafter":  false,
+    "contains_npu_partitions":  false,
+    "target_modified":  false,
+    "sdk_build_id":  "v2.37.0.250724175447_124859",
+    "trained_with_head_qat":  true,
+    "teacher_compiled_sha256":  "c05fe24cb87fe20f3c2fdf3bb942755486f4c34785ad4d28a5b5546a7378983b",
+    "input_contract":  "cached-feature-projections",
+    "embedding_file":  "embedding-cpu-fp32.pte",
+    "embedding_sha256":  "009fd99eded656aecd6d9624cdc8cf4fcdcc2e5463073bf627a6097aa4b78221",
+    "head_file":  "head-cpu-int8.bin",
+    "head_sha256":  "08ee78145df712d8658a6401df294f5b81786f5f0c872358c5b07a20e7701b76",
+    "cpu_head_weight_dtype":  "int8_per_row",
+    "cpu_head_activation_dtype":  "dynamic_int8_per_query",
+    "source_npu_artifact_sha256":  "fce49acc3f4be740ec80072c7ce7aec5b7d69690818b9357e40446f1a580edb7",
+    "incremental_context_cache":  true,
+    "active_vocabulary_file":  "active-vocabulary.u32",
+    "active_vocabulary_sha256":  "e6a4aab3893725158aea29a728132132e45ae3dbf694f7117814c600f880aea9",
+    "active_vocabulary_base_count":  5421,
+    "active_vocabulary_source_role":  "train",
+    "active_vocabulary_dynamic":  "prompt and already emitted pending tokens",
+    "selector_implementation":  "native_fp32_bilinear_topk",
+    "training_step":  1100,
+    "training_controls":  {
+                              "batch":  16,
+                              "accumulation":  1,
+                              "lr":  3E-05,
+                              "warmup_steps":  50,
+                              "lr_schedule":  "cosine",
+                              "domain_repetitions":  {
+                                                         "english":  3
+                                                     },
+                              "loss_controls":  {
+                                                    "first_token_weight":  2.0,
+                                                    "distillation_weight":  0.5
+                                                },
+                              "selection_domains":  [
+                                                        "english",
+                                                        "korean"
+                                                    ]
+                          }
+}
