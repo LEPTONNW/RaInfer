@@ -1,5 +1,7 @@
 # RaInfer
 
+[한국어](README.md) | [English](README.en.md)
+
 **Android용 CPU 초안 생성 + Qualcomm NPU 블록 검증 추론 엔진**
 
 RaInfer는 작은 초안 모델이 다음 토큰 후보를 만들고, 실제 답변을 담당하는 모델이 여러 후보를 한 번에 검증하도록 연결하는 C++17 모바일 추론 엔진입니다. 현재 검증된 구성은 **Gemma 4 E2B + 해당 NPU 모델에 맞춰 학습한 DFlash2 파생 초안 모델**입니다.
@@ -9,10 +11,6 @@ Galaxy S22 Ultra의 Snapdragon 8 Gen 1(SM8450)에서 동작을 검증했습니�
 > 이 저장소는 **엔진 소스 공개본**입니다. 모델 가중치, 학습 데이터, Qualcomm SDK·런타임, APK는 포함하지 않습니다. 처음 복제한 상태에서는 호스트 계약 테스트를 실행할 수 있습니다. 휴대폰의 실제 추론에는 아래에 설명한 서로 호환되는 모델 자산과 별도로 준비한 의존성이 필요합니다. 현재 이 저장소에서 다운로드할 수 있는 완성형 본체+초안 모델 묶음은 제공하지 않습니다.
 
 **자신의 앱에 연결하려면 [앱 독립 연동 가이드](docs/INTEGRATION.md)부터 읽어보세요.** 특정 채팅 앱 설치 없이 JSONL 프로세스 인터페이스로 연결합니다. UI·앱 배포본 대신 [Kotlin 프로세스 어댑터 예제](examples/android/RaInferProcess.kt)를 제공합니다.
-
-## English overview
-
-RaInfer is a C++17 Android inference runner connecting a CPU-cached DFlash2-derived drafter to a fixed-shape Qualcomm QNN NPU verifier. The qualified target is Gemma 4 E2B on Snapdragon 8 Gen 1 / Hexagon v69, with a 2,048-token compiled context and four input rows per verification. It is **not** a generic GGUF runner or a drop-in host for arbitrary DFlash checkpoints. Model weights and proprietary SDK/runtime files are not included. Host contract tests work without either dependency. See [build instructions](docs/BUILD.md), [runtime protocol](docs/PROTOCOL.md), and [licenses](NOTICE.md).
 
 ## 어떤 용도의 엔진인가요?
 
